@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="3dSpaceShooter.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+</Solution>
