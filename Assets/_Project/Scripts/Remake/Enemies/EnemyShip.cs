@@ -166,6 +166,15 @@ public class EnemyShip : MonoBehaviour
             HighScoreManager.Instance.AddScore(100);
         }
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayExplosionSound();
+        }
+
+
         Destroy(gameObject);
+
+
+
     }
 }

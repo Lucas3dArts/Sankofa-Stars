@@ -80,6 +80,12 @@ public class Asteroide : MonoBehaviour
 
         HighScoreManager.Instance.AddScore(10);
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayExplosionSound();
+        }
+
+
         Destroy(gameObject);
     }
 

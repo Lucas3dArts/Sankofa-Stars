@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7109896270082146222}
   - component: {fileID: 683629504424250310}
   - component: {fileID: 3520225648954974377}
+  - component: {fileID: 3779030746306310655}
   m_Layer: 0
   m_Name: StormPowerUp
   m_TagString: PowerUp
@@ -131,3 +132,16 @@ MonoBehaviour:
   fireRate: 0.5
   range: 80
   damage: 100
+--- !u!114 &3779030746306310655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3943518925060866520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 125bc73a7cbf1824a8edf828724bf7f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 3dSpaceShooter::RadarTarget
+  targetType: 2

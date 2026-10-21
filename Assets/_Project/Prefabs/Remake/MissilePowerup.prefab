@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6777600399285386286}
   - component: {fileID: 5795161343335870480}
   - component: {fileID: 992815998437044089}
+  - component: {fileID: -220541750506880631}
   m_Layer: 0
   m_Name: MissilePowerup
   m_TagString: PowerUp
@@ -129,5 +130,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 3dSpaceShooter::MissilePowerUp
   duration: 10
   fireRate: 0.5
-  missilePrefab: {fileID: 6647562708895900388, guid: bae06594d59f62f4bb69e217348ed79e, type: 3}
-  firePoint: {fileID: 0}
+  missilePrefab: {fileID: 1152056438587226443, guid: 6c07c95a42c9ac243bb02b33fcb415a8, type: 3}
+--- !u!114 &-220541750506880631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7909053960956779177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 125bc73a7cbf1824a8edf828724bf7f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 3dSpaceShooter::RadarTarget
+  targetType: 2

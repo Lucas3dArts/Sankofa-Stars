@@ -171,6 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958f2cefffb772d4db4bfe8c8c4cbca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::AsteroidsBullet
-  speed: 10
+  speed: 4
   lifeTime: 2
   asteroidsCamera: {fileID: 4287449886476302635, guid: 80b9279cd02ef9c478ae166e15920dca, type: 3}

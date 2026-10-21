@@ -4030,6 +4030,7 @@ GameObject:
   - component: {fileID: 6008583714288626775}
   - component: {fileID: 3662948317592791096}
   - component: {fileID: 2032868676347623104}
+  - component: {fileID: 3469979860936250708}
   m_Layer: 8
   m_Name: Enemy_Station
   m_TagString: Inimigo
@@ -4135,15 +4136,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::EnemyShipStation
   station: {fileID: 1227615694535343714, guid: 20a69f8ef0efe294ca16ca12377aa2b6, type: 3}
-  moveSpeed: 20
+  moveSpeed: 10
   rotationSpeed: 5
-  attackDistance: 100
-  fireRate: 1
+  attackDistance: 300
+  fireRate: 2
   projectilePrefab: {fileID: 7806511974304636477, guid: 72b0934b84f5cb7478a8bc0d7117ee61, type: 3}
   firePoint: {fileID: 4906791262167654438}
   projectileSpeed: 50
-  stationDamage: 100
+  stationDamage: 25
   maxHealth: 3
+--- !u!114 &3469979860936250708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8928672228595193075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 125bc73a7cbf1824a8edf828724bf7f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 3dSpaceShooter::RadarTarget
+  targetType: 1
 --- !u!1 &9001926157986688809
 GameObject:
   m_ObjectHideFlags: 0

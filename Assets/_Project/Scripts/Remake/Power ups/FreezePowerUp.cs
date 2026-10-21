@@ -4,32 +4,45 @@ using UnityEngine;
 
 public class FreezePowerUp : MonoBehaviour
 {
-    [Header("Freeze Settings")]
+    [Header("Configuração")]
     [SerializeField] private float freezeDuration = 5f;
+
+    [Header("Visual")]
+    [SerializeField] private GameObject tridentePrefab;
+    [Header("BG Effect")]
+    [SerializeField] private Material backgroundMaterial;
+    [SerializeField] private Color color1;
+    [SerializeField] private Color color2;
 
     private bool activated = false;
 
+    private class FrozenObject
+    {
+        public Rigidbody rb;
+        public Vector3 velocity;
+        public Vector3 angularVelocity;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        // Player encostou no poder
-        PlayerHealth player =
-            other.GetComponentInParent<PlayerHealth>();
-
-        if (player != null)
-        {
-            ActivateFreeze();
+        if (activated)
             return;
-        }
 
-        // Tiro do Player atingiu o poder
-        Projectile projectile =
-            other.GetComponentInParent<Projectile>();
-
-        if (projectile != null)
+        if (other.CompareTag("Player") || other.CompareTag("Tiro"))
         {
             ActivateFreeze();
 
-            Destroy(projectile.gameObject);
+            if (other.CompareTag("Tiro"))
+                Destroy(other.gameObject);
+
+            // Faz o power-up sumir
+            Collider col = GetComponent<Collider>();
+            if (col != null)
+                col.enabled = false;
+
+            MeshRenderer mr = GetComponent<MeshRenderer>();
+            if (mr != null)
+                mr.enabled = false;
         }
     }
 
@@ -46,7 +59,6 @@ public class FreezePowerUp : MonoBehaviour
             " segundos!"
         );
 
-        // Mostra o nome e a duração na HUD
         if (PowerUpDurationUI.Instance != null)
         {
             PowerUpDurationUI.Instance.StartPowerUp(
@@ -55,85 +67,122 @@ public class FreezePowerUp : MonoBehaviour
             );
         }
 
-        StartCoroutine(FreezeAllEnemies());
+        backgroundMaterial.SetColor("_Color_1", color1);
+        backgroundMaterial.SetColor("_Color_2", color2);
+        backgroundMaterial.SetFloat("_Power_Enable", 1);
 
-        Destroy(gameObject);
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayPowerUpSound();
+        }
+
+
+        StartCoroutine(FreezeAllEnemies());
     }
 
     private IEnumerator FreezeAllEnemies()
     {
-        List<Rigidbody> frozenObjects =
-            new List<Rigidbody>();
+        List<FrozenObject> frozenObjects = new List<FrozenObject>();
+        List<GameObject> tridents = new List<GameObject>();
 
-        // =========================
-        // CONGELA ASTEROIDES
-        // =========================
-
+        // ASTEROIDES
         GameObject[] asteroids =
             GameObject.FindGameObjectsWithTag("Asteroide");
 
         foreach (GameObject asteroid in asteroids)
         {
-            Rigidbody rb =
-                asteroid.GetComponent<Rigidbody>();
+            Rigidbody rb = asteroid.GetComponent<Rigidbody>();
 
             if (rb != null)
             {
+                frozenObjects.Add(new FrozenObject
+                {
+                    rb = rb,
+                    velocity = rb.linearVelocity,
+                    angularVelocity = rb.angularVelocity
+                });
+
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
-
                 rb.isKinematic = true;
 
-                frozenObjects.Add(rb);
+                if (tridentePrefab != null)
+                {
+                    GameObject trident = Instantiate(
+                        tridentePrefab,
+                        asteroid.transform.position,
+                        asteroid.transform.rotation,
+                        asteroid.transform
+                    );
+
+                    tridents.Add(trident);
+                }
             }
         }
 
-        // =========================
-        // CONGELA NAVES
-        // =========================
-
+        // INIMIGOS
         GameObject[] enemies =
             GameObject.FindGameObjectsWithTag("Inimigo");
 
         foreach (GameObject enemy in enemies)
         {
-            Rigidbody rb =
-                enemy.GetComponent<Rigidbody>();
+            Rigidbody rb = enemy.GetComponent<Rigidbody>();
 
             if (rb != null)
             {
+                frozenObjects.Add(new FrozenObject
+                {
+                    rb = rb,
+                    velocity = rb.linearVelocity,
+                    angularVelocity = rb.angularVelocity
+                });
+
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
-
                 rb.isKinematic = true;
 
-                frozenObjects.Add(rb);
+                if (tridentePrefab != null)
+                {
+                    GameObject trident = Instantiate(
+                        tridentePrefab,
+                        enemy.transform.position,
+                        enemy.transform.rotation,
+                        enemy.transform
+                    );
+
+                    tridents.Add(trident);
+                }
             }
         }
 
-        Debug.Log(
-            "Todos os asteroides e naves foram congelados!"
-        );
+        Debug.Log("Todos os inimigos e asteroides foram congelados.");
 
-        // Aguarda o tempo do poder
-        yield return new WaitForSeconds(
-            freezeDuration
-        );
+        yield return new WaitForSeconds(freezeDuration);
 
-        // =========================
         // DESCONGELA
-        // =========================
-
-        foreach (Rigidbody rb in frozenObjects)
+        foreach (FrozenObject obj in frozenObjects)
         {
-            if (rb == null)
-                continue;
-
-            rb.isKinematic = false;
+            if (obj.rb != null)
+            {
+                obj.rb.isKinematic = false;
+                obj.rb.linearVelocity = obj.velocity;
+                obj.rb.angularVelocity = obj.angularVelocity;
+            }
         }
 
-        Debug.Log(
-            "Congelamento terminou!"
-        );
+        // REMOVE TRIDENTES
+        foreach (GameObject trident in tridents)
+        {
+            if (trident != null)
+            {
+                Destroy(trident);
+            }
+        }
+
+        backgroundMaterial.SetFloat("_Power_Enable", 0);
+
+        Debug.Log("Congelamento encerrado.");
+
+        Destroy(gameObject);
     }
 }

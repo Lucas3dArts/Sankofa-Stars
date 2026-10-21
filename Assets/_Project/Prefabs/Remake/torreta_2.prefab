@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::StationTurret
   turretHead: {fileID: 7695523078201622791}
-  detectionRange: 100
+  detectionRange: 200
   rotationSpeed: 10
   projectilePrefab: {fileID: 5341475406241573782, guid: f79a1c0b0ab835e41a6d7d7e8751f8e9, type: 3}
   firePoint: {fileID: 5866889011106014192}

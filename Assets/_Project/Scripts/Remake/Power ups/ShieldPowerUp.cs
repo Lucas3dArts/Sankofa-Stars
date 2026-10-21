@@ -64,6 +64,12 @@ public class ShieldPowerUp : MonoBehaviour
             );
         }
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayPowerUpSound();
+        }
+
         Destroy(gameObject);
+        
     }
 }

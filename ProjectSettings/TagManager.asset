@@ -8,6 +8,7 @@ TagManager:
   - Inimigo
   - Station
   - PowerUp
+  - Tiro
   layers:
   - Default
   - TransparentFX

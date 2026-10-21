@@ -45,5 +45,10 @@ public class ShipShooter : MonoBehaviour
         {
             rb.linearVelocity = firePoint.forward * projectileSpeed;
         }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayShootSound();
+        }
     }
 }

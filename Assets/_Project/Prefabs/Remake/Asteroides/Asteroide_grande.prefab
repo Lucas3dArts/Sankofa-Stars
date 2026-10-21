@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6801419993470552500}
   - component: {fileID: 21216246388670477}
   - component: {fileID: 624802149860513398}
+  - component: {fileID: -5733324324715829127}
   m_Layer: 6
   m_Name: Asteroide_grande
   m_TagString: Asteroide
@@ -95,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc87b4e24eab31b46b06b96ec53e2227, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::Asteroide
-  destroyDistance: 300
+  destroyDistance: 500
   size: 0
   maxHealth: 100
   asteroidPrefab: {fileID: 8277274686735342288}
@@ -105,6 +106,19 @@ MonoBehaviour:
   largeStationDamage: 100
   mediumStationDamage: 50
   smallStationDamage: 25
+--- !u!114 &-5733324324715829127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8277274686735342288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 125bc73a7cbf1824a8edf828724bf7f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 3dSpaceShooter::RadarTarget
+  targetType: 0
 --- !u!1001 &5380651287891132318
 PrefabInstance:
   m_ObjectHideFlags: 0

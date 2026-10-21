@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7450350857950508400}
   - component: {fileID: 2058676618467829568}
   - component: {fileID: 7438905321241502808}
+  - component: {fileID: 6738264592529481290}
   m_Layer: 0
   m_Name: FreezePowerUp
   m_TagString: PowerUp
@@ -126,3 +127,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::FreezePowerUp
   freezeDuration: 5
+  tridentePrefab: {fileID: 4956755269411214199, guid: b0e3caf2eadecd340a8fedf8ed4fbdc2, type: 3}
+  backgroundMaterial: {fileID: 2100000, guid: ef3cf5c06a1cdf643be55dc7d60fc029, type: 2}
+  color1: {r: 0.46226418, g: 0.071956225, b: 0.071956225, a: 0}
+  color2: {r: 0.11081432, g: 0.08401567, b: 0.3018868, a: 0}
+--- !u!114 &6738264592529481290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373058952910430413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 125bc73a7cbf1824a8edf828724bf7f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 3dSpaceShooter::RadarTarget
+  targetType: 2

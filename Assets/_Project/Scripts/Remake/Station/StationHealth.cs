@@ -7,6 +7,13 @@ public class StationHealth : MonoBehaviour
     [Header("Station Health")]
     [SerializeField] private int maxHealth = 1000;
 
+    [SerializeField] private GameObject shieldVisual;
+
+    [Header("BG Effect")]
+    [SerializeField] private Material backgroundMaterial;
+    [SerializeField] private Color color1;
+    [SerializeField] private Color color2;
+
     private int currentHealth;
     private bool shieldActive = false;
 
@@ -25,6 +32,11 @@ public class StationHealth : MonoBehaviour
                 currentHealth,
                 maxHealth
             );
+        }
+
+        if (shieldVisual != null)
+        {
+            shieldVisual.SetActive(false);
         }
     }
 
@@ -111,6 +123,11 @@ public class StationHealth : MonoBehaviour
     {
         shieldActive = true;
 
+        if (shieldVisual != null)
+        {
+            shieldVisual.SetActive(true);
+        }
+
         Debug.Log(
             "Escudo da Estação ativado!"
         );
@@ -123,15 +140,26 @@ public class StationHealth : MonoBehaviour
             nameof(DeactivateShield),
             duration
         );
+
+        backgroundMaterial.SetColor("_Color_1", color1);
+        backgroundMaterial.SetColor("_Color_2", color2);
+        backgroundMaterial.SetFloat("_Power_Enable", 1);
     }
 
     private void DeactivateShield()
     {
         shieldActive = false;
 
+        if (shieldVisual != null)
+        {
+            shieldVisual.SetActive(false);
+        }
+
         Debug.Log(
             "Escudo da Estação acabou!"
         );
+
+        backgroundMaterial.SetFloat("_Power_Enable", 0);
     }
 
     private void Die()

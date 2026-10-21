@@ -4353,6 +4353,7 @@ GameObject:
   - component: {fileID: -2288249724570301916}
   - component: {fileID: 3997949824634142722}
   - component: {fileID: -1131650381219589892}
+  - component: {fileID: 6214446648608989970}
   m_Layer: 8
   m_Name: Enemy_Player
   m_TagString: Inimigo
@@ -4449,14 +4450,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b31176cae334d142b75ea93c1ead301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::EnemyShip
-  player: {fileID: 0}
+  player: {fileID: 767046572685319241, guid: 16b816ca265f3494e8ac3d56530a581c, type: 3}
   moveSpeed: 20
   rotationSpeed: 10
-  attackDistance: 50
+  attackDistance: 60
   projectilePrefab: {fileID: 7806511974304636477, guid: 72b0934b84f5cb7478a8bc0d7117ee61, type: 3}
   firePoint: {fileID: 1577325895054218545}
-  fireRate: 0.5
-  maxHealth: 1
+  fireRate: 0.8
+  maxHealth: 3
+--- !u!114 &6214446648608989970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5367056974660676552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 125bc73a7cbf1824a8edf828724bf7f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 3dSpaceShooter::RadarTarget
+  targetType: 1
 --- !u!1 &5571806161264007847
 GameObject:
   m_ObjectHideFlags: 0
