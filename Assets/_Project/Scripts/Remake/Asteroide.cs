@@ -85,6 +85,14 @@ public class Asteroide : MonoBehaviour
             AudioManager.Instance.PlayExplosionSound();
         }
 
+        if (ExplosionEffectManager.Instance != null)
+        {
+            ExplosionEffectManager.Instance.CreateExplosion(
+                transform.position,
+                1f
+            );
+        }
+
 
         Destroy(gameObject);
     }

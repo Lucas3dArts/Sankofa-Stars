@@ -65,6 +65,16 @@
                     "interactions": "",
                     "initialStateCheck": true,
                     "priority": 0
+                },
+                {
+                    "name": "Look_original",
+                    "type": "PassThrough",
+                    "id": "4dd30e0d-de76-4c9a-928c-7efe6bdeb27f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -197,6 +207,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "MoveSpeed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77d8d180-52fd-468b-b8ac-2d47e8354d2d",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look_original",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -8,57 +8,57 @@ public class EnemyShip : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 15f;
     [SerializeField] private float rotationSpeed = 5f;
+
+    [Tooltip("Distância na qual a nave para de avançar e começa a atacar.")]
     [SerializeField] private float attackDistance = 30f;
+
+    [Tooltip("Impede que a nave encoste completamente no jogador.")]
+    [SerializeField] private float stoppingDistance = 10f;
 
     [Header("Shooting")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 1f;
+    [SerializeField] private float projectileSpeed = 50f;
 
     [Header("Health")]
     [SerializeField] private int maxHealth = 3;
 
     private int currentHealth;
     private float nextFireTime;
-
     private Rigidbody rb;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         currentHealth = maxHealth;
+
+        if (rb == null)
+        {
+            Debug.LogError(
+                "EnemyShip precisa de um Rigidbody no mesmo objeto.",
+                gameObject
+            );
+        }
     }
 
     private void Start()
     {
-        if (player == null)
-        {
-            GameObject playerObject =
-                GameObject.FindWithTag("Player");
-
-            if (playerObject != null)
-            {
-                player = playerObject.transform;
-            }
-        }
+        FindPlayer();
     }
 
     private void FixedUpdate()
     {
-        if (player == null)
+        if (rb == null)
             return;
 
-        float distance =
-            Vector3.Distance(transform.position, player.position);
+        if (player == null)
+        {
+            FindPlayer();
+            return;
+        }
 
-        if (distance > attackDistance)
-        {
-            ChasePlayer();
-        }
-        else
-        {
-            FacePlayer();
-        }
+        FollowPlayer();
     }
 
     private void Update()
@@ -66,45 +66,71 @@ public class EnemyShip : MonoBehaviour
         if (player == null)
             return;
 
-        float distance =
-            Vector3.Distance(transform.position, player.position);
+        float distanceToPlayer = Vector3.Distance(
+            transform.position,
+            player.position
+        );
 
-        if (distance <= attackDistance)
+        if (distanceToPlayer <= attackDistance)
         {
             Shoot();
         }
     }
 
-    private void ChasePlayer()
+    private void FindPlayer()
     {
-        Vector3 direction =
-            (player.position - transform.position).normalized;
+        GameObject playerObject = GameObject.FindWithTag("Player");
 
-        Quaternion targetRotation =
-            Quaternion.LookRotation(direction);
-
-        Quaternion newRotation =
-            Quaternion.Slerp(
-                rb.rotation,
-                targetRotation,
-                rotationSpeed * Time.fixedDeltaTime
+        if (playerObject != null)
+        {
+            player = playerObject.transform;
+        }
+        else
+        {
+            Debug.LogWarning(
+                "Nenhum objeto com a tag Player foi encontrado.",
+                gameObject
             );
-
-        rb.MoveRotation(newRotation);
-
-        rb.MovePosition(
-            rb.position +
-            transform.forward * moveSpeed * Time.fixedDeltaTime
-        );
+        }
     }
 
-    private void FacePlayer()
+    private void FollowPlayer()
     {
-        Vector3 direction =
-            (player.position - transform.position).normalized;
+        Vector3 directionToPlayer =
+            player.position - rb.position;
+
+        float distanceToPlayer = directionToPlayer.magnitude;
+
+        if (distanceToPlayer <= 0.01f)
+            return;
+
+        directionToPlayer.Normalize();
+
+        RotateTowardsPlayer(directionToPlayer);
+
+        // Continua seguindo até alcançar a distância mínima.
+        if (distanceToPlayer > stoppingDistance)
+        {
+            Vector3 nextPosition =
+                rb.position +
+                directionToPlayer *
+                moveSpeed *
+                Time.fixedDeltaTime;
+
+            rb.MovePosition(nextPosition);
+        }
+    }
+
+    private void RotateTowardsPlayer(Vector3 directionToPlayer)
+    {
+        if (directionToPlayer == Vector3.zero)
+            return;
 
         Quaternion targetRotation =
-            Quaternion.LookRotation(direction);
+            Quaternion.LookRotation(
+                directionToPlayer,
+                Vector3.up
+            );
 
         Quaternion newRotation =
             Quaternion.Slerp(
@@ -137,8 +163,11 @@ public class EnemyShip : MonoBehaviour
 
         if (projectileRb != null)
         {
+            Vector3 shootingDirection =
+                (player.position - firePoint.position).normalized;
+
             projectileRb.linearVelocity =
-                firePoint.forward * 50f;
+                shootingDirection * projectileSpeed;
         }
     }
 
@@ -171,10 +200,16 @@ public class EnemyShip : MonoBehaviour
             AudioManager.Instance.PlayExplosionSound();
         }
 
+        if (ExplosionEffectManager.Instance != null)
+        {
+            ExplosionEffectManager.Instance.CreateExplosion(
+                transform.position,
+                1.5f
+            );
+        }
+
+
 
         Destroy(gameObject);
-
-
-
     }
 }

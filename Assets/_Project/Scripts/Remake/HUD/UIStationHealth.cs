@@ -14,6 +14,10 @@ public class UIStationHealth : MonoBehaviour
 
     public void UpdateHealth(int currentHealth, int maxHealth)
     {
-        healthText.text = "ESTAÇÃO: " + currentHealth + " / " + maxHealth;
+        if (healthText == null)
+            return;
+
+        healthText.text =
+            "Plataforma: " + currentHealth;
     }
 }

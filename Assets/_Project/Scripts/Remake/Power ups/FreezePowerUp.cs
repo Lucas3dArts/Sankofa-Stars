@@ -9,6 +9,7 @@ public class FreezePowerUp : MonoBehaviour
 
     [Header("Visual")]
     [SerializeField] private GameObject tridentePrefab;
+
     [Header("BG Effect")]
     [SerializeField] private Material backgroundMaterial;
     [SerializeField] private Color color1;
@@ -25,24 +26,93 @@ public class FreezePowerUp : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (activated)
+        TryActivatePowerUp(other.gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        TryActivatePowerUp(collision.gameObject);
+    }
+
+    private void TryActivatePowerUp(GameObject objectThatTouched)
+    {
+        if (activated || objectThatTouched == null)
             return;
 
-        if (other.CompareTag("Player") || other.CompareTag("Tiro"))
+        GameObject detectedObject = FindPlayerOrShot(objectThatTouched);
+
+        if (detectedObject == null)
+            return;
+
+        bool isPlayer = detectedObject.CompareTag("Player");
+        bool isShot = detectedObject.CompareTag("Tiro");
+
+        if (!isPlayer && !isShot)
+            return;
+
+        Debug.Log(
+            "Freeze Power-Up ativado por: " +
+            detectedObject.name +
+            " | Tag: " +
+            detectedObject.tag
+        );
+
+        ActivateFreeze();
+
+        if (isShot)
         {
-            ActivateFreeze();
+            Destroy(detectedObject);
+        }
 
-            if (other.CompareTag("Tiro"))
-                Destroy(other.gameObject);
+        HidePowerUp();
+    }
 
-            // Faz o power-up sumir
-            Collider col = GetComponent<Collider>();
-            if (col != null)
-                col.enabled = false;
+    private GameObject FindPlayerOrShot(GameObject touchedObject)
+    {
+        Transform currentTransform = touchedObject.transform;
 
-            MeshRenderer mr = GetComponent<MeshRenderer>();
-            if (mr != null)
-                mr.enabled = false;
+        while (currentTransform != null)
+        {
+            if (currentTransform.CompareTag("Player") ||
+                currentTransform.CompareTag("Tiro"))
+            {
+                return currentTransform.gameObject;
+            }
+
+            currentTransform = currentTransform.parent;
+        }
+
+        Rigidbody attachedRigidbody =
+            touchedObject.GetComponentInParent<Rigidbody>();
+
+        if (attachedRigidbody != null)
+        {
+            GameObject rigidbodyObject = attachedRigidbody.gameObject;
+
+            if (rigidbodyObject.CompareTag("Player") ||
+                rigidbodyObject.CompareTag("Tiro"))
+            {
+                return rigidbodyObject;
+            }
+        }
+
+        return null;
+    }
+
+    private void HidePowerUp()
+    {
+        Collider[] colliders = GetComponentsInChildren<Collider>(true);
+
+        foreach (Collider currentCollider in colliders)
+        {
+            currentCollider.enabled = false;
+        }
+
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer currentRenderer in renderers)
+        {
+            currentRenderer.enabled = false;
         }
     }
 
@@ -67,15 +137,19 @@ public class FreezePowerUp : MonoBehaviour
             );
         }
 
-        backgroundMaterial.SetColor("_Color_1", color1);
-        backgroundMaterial.SetColor("_Color_2", color2);
-        backgroundMaterial.SetFloat("_Power_Enable", 1);
+        if (BackgroundPowerEffectManager.Instance != null)
+        {
+            BackgroundPowerEffectManager.Instance.ActivateEffect(
+                this,
+                color1,
+                color2
+            );
+        }
 
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayPowerUpSound();
         }
-
 
         StartCoroutine(FreezeAllEnemies());
     }
@@ -91,33 +165,7 @@ public class FreezePowerUp : MonoBehaviour
 
         foreach (GameObject asteroid in asteroids)
         {
-            Rigidbody rb = asteroid.GetComponent<Rigidbody>();
-
-            if (rb != null)
-            {
-                frozenObjects.Add(new FrozenObject
-                {
-                    rb = rb,
-                    velocity = rb.linearVelocity,
-                    angularVelocity = rb.angularVelocity
-                });
-
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.isKinematic = true;
-
-                if (tridentePrefab != null)
-                {
-                    GameObject trident = Instantiate(
-                        tridentePrefab,
-                        asteroid.transform.position,
-                        asteroid.transform.rotation,
-                        asteroid.transform
-                    );
-
-                    tridents.Add(trident);
-                }
-            }
+            FreezeObject(asteroid, frozenObjects, tridents);
         }
 
         // INIMIGOS
@@ -126,51 +174,30 @@ public class FreezePowerUp : MonoBehaviour
 
         foreach (GameObject enemy in enemies)
         {
-            Rigidbody rb = enemy.GetComponent<Rigidbody>();
-
-            if (rb != null)
-            {
-                frozenObjects.Add(new FrozenObject
-                {
-                    rb = rb,
-                    velocity = rb.linearVelocity,
-                    angularVelocity = rb.angularVelocity
-                });
-
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.isKinematic = true;
-
-                if (tridentePrefab != null)
-                {
-                    GameObject trident = Instantiate(
-                        tridentePrefab,
-                        enemy.transform.position,
-                        enemy.transform.rotation,
-                        enemy.transform
-                    );
-
-                    tridents.Add(trident);
-                }
-            }
+            FreezeObject(enemy, frozenObjects, tridents);
         }
 
-        Debug.Log("Todos os inimigos e asteroides foram congelados.");
+        Debug.Log(
+            "Todos os inimigos e asteroides foram congelados."
+        );
 
         yield return new WaitForSeconds(freezeDuration);
 
         // DESCONGELA
-        foreach (FrozenObject obj in frozenObjects)
+        foreach (FrozenObject frozenObject in frozenObjects)
         {
-            if (obj.rb != null)
+            if (frozenObject.rb != null)
             {
-                obj.rb.isKinematic = false;
-                obj.rb.linearVelocity = obj.velocity;
-                obj.rb.angularVelocity = obj.angularVelocity;
+                frozenObject.rb.isKinematic = false;
+                frozenObject.rb.linearVelocity =
+                    frozenObject.velocity;
+
+                frozenObject.rb.angularVelocity =
+                    frozenObject.angularVelocity;
             }
         }
 
-        // REMOVE TRIDENTES
+        // REMOVE OS TRIDENTES
         foreach (GameObject trident in tridents)
         {
             if (trident != null)
@@ -179,10 +206,59 @@ public class FreezePowerUp : MonoBehaviour
             }
         }
 
-        backgroundMaterial.SetFloat("_Power_Enable", 0);
+        if (BackgroundPowerEffectManager.Instance != null)
+        {
+            BackgroundPowerEffectManager.Instance.DeactivateEffect(this);
+        }
 
         Debug.Log("Congelamento encerrado.");
 
         Destroy(gameObject);
+    }
+
+    private void FreezeObject(
+        GameObject objectToFreeze,
+        List<FrozenObject> frozenObjects,
+        List<GameObject> tridents
+    )
+    {
+        if (objectToFreeze == null)
+            return;
+
+        Rigidbody rb =
+            objectToFreeze.GetComponent<Rigidbody>();
+
+        if (rb == null)
+        {
+            rb = objectToFreeze.GetComponentInChildren<Rigidbody>();
+        }
+
+        if (rb == null)
+            return;
+
+        frozenObjects.Add(
+            new FrozenObject
+            {
+                rb = rb,
+                velocity = rb.linearVelocity,
+                angularVelocity = rb.angularVelocity
+            }
+        );
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.isKinematic = true;
+
+        if (tridentePrefab != null)
+        {
+            GameObject trident = Instantiate(
+                tridentePrefab,
+                objectToFreeze.transform.position,
+                objectToFreeze.transform.rotation,
+                objectToFreeze.transform
+            );
+
+            tridents.Add(trident);
+        }
     }
 }

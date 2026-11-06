@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.VFX;
 
 public class ShipShooter : MonoBehaviour
 {
@@ -10,15 +11,17 @@ public class ShipShooter : MonoBehaviour
 
     [Header("Fire Rate")]
     [SerializeField] private float fireRate = 0.2f;
-
     private float nextFireTime;
 
-    void Update()
+    [Header("Muzzle Flash")]
+    [SerializeField] private VisualEffect muzzleFlash;
+
+    private void Update()
     {
         HandleFireInput();
     }
 
-    void HandleFireInput()
+    private void HandleFireInput()
     {
         bool isFiring =
             Mouse.current.leftButton.isPressed ||
@@ -31,7 +34,7 @@ public class ShipShooter : MonoBehaviour
         }
     }
 
-    void Shoot()
+    private void Shoot()
     {
         GameObject projectile = Instantiate(
             projectilePrefab,
@@ -46,9 +49,21 @@ public class ShipShooter : MonoBehaviour
             rb.linearVelocity = firePoint.forward * projectileSpeed;
         }
 
+        PlayMuzzleFlash();
+
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayShootSound();
         }
+    }
+
+    private void PlayMuzzleFlash()
+    {
+        if (muzzleFlash == null)
+            return;
+
+        muzzleFlash.Stop();
+        muzzleFlash.Reinit();
+        muzzleFlash.Play();
     }
 }

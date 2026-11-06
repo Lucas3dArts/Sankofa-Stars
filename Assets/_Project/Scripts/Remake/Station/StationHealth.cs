@@ -141,9 +141,14 @@ public class StationHealth : MonoBehaviour
             duration
         );
 
-        backgroundMaterial.SetColor("_Color_1", color1);
-        backgroundMaterial.SetColor("_Color_2", color2);
-        backgroundMaterial.SetFloat("_Power_Enable", 1);
+        if (BackgroundPowerEffectManager.Instance != null)
+        {
+            BackgroundPowerEffectManager.Instance.ActivateEffect(
+                this,
+                color1,
+                color2
+            );
+        }
     }
 
     private void DeactivateShield()
@@ -159,7 +164,10 @@ public class StationHealth : MonoBehaviour
             "Escudo da Estação acabou!"
         );
 
-        backgroundMaterial.SetFloat("_Power_Enable", 0);
+        if (BackgroundPowerEffectManager.Instance != null)
+        {
+            BackgroundPowerEffectManager.Instance.DeactivateEffect(this);
+        }
     }
 
     private void Die()

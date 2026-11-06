@@ -38,12 +38,20 @@ public class LightningAttack : MonoBehaviour
         if (powerUpAction != null &&
             powerUpAction.action.WasPressedThisFrame())
         {
+            //ativa o poder
             ActivatePower();
 
-            backgroundMaterial.SetColor("_Color_1", color1);
-            backgroundMaterial.SetColor("_Color_2", color2);
-            backgroundMaterial.SetFloat("_Power_Enable", 1);
+            //ativa o effeito do background
+            if (BackgroundPowerEffectManager.Instance != null)
+            {
+                BackgroundPowerEffectManager.Instance.ActivateEffect(
+                    this,
+                    color1,
+                    color2
+                );
+            }
 
+            //ativa o som
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlayPowerUpSound();
@@ -128,7 +136,10 @@ public class LightningAttack : MonoBehaviour
 
         powerActive = false;
 
-        backgroundMaterial.SetFloat("_Power_Enable", 0);
+        if (BackgroundPowerEffectManager.Instance != null)
+        {
+            BackgroundPowerEffectManager.Instance.DeactivateEffect(this);
+        }
 
         Debug.Log(
             "⚡ TEMPESTADE DE IANSÃ TERMINOU!"
