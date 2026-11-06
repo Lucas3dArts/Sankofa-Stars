@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc6d46c5a01771e4aab76438017ce183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::MissilePowerUp
-  duration: 10
+  duration: 20
   fireRate: 0.5
   missilePrefab: {fileID: 1392366741119404118, guid: 18e9f6f5f09664645baf22f9935eb212, type: 3}
 --- !u!135 &4377205560589894163

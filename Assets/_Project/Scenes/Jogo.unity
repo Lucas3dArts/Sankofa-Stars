@@ -520,8 +520,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Voltar ao Menu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b9b814021dc28414e8177e6fc697f699, type: 2}
+  m_sharedMaterial: {fileID: -6305659330012232290, guid: b9b814021dc28414e8177e6fc697f699, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -545,8 +545,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
-  m_fontSizeBase: 22
+  m_fontSize: 18.9
+  m_fontSizeBase: 18.9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -658,8 +658,8 @@ MonoBehaviour:
   horizontalRadiusMultiplier: 0.65
   verticalRadiusMultiplier: 0.9
   reservedBottomSpace: 30
-  centerHideAngle: 30
-  centerShowAngle: 36.6
+  centerHideAngle: 26.6
+  centerShowAngle: 27
   iconFadeSpeed: 8
   iconMovementSpeed: 12
   fadeTargetsBehind: 1
@@ -881,9 +881,9 @@ MonoBehaviour:
   stationEnemyPrefab: {fileID: 8928672228595193075, guid: 8669b4c2a51e6f941905fd4c3acbe149, type: 3}
   station: {fileID: 143236113}
   spawnDistance: 500
-  initialPlayerEnemies: 2
+  initialPlayerEnemies: 1
   playerEnemiesIncreasePerWave: 1
-  initialStationEnemies: 2
+  initialStationEnemies: 1
   stationEnemiesIncreasePerWave: 1
   maxWaveTime: 100
   delayBetweenWaves: 10
@@ -4373,8 +4373,8 @@ MonoBehaviour:
   asteroidPrefab: {fileID: 8277274686735342288, guid: e69d4de247877554a9e83c8d3621b960, type: 3}
   station: {fileID: 143236113}
   spawnRadius: 500
-  initialAsteroids: 20
-  waveDuration: 30
+  initialAsteroids: 2
+  waveDuration: 20
   delayBetweenWaves: 2
   minForce: 5
   maxForce: 10
@@ -4507,8 +4507,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Reiniciar
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b9b814021dc28414e8177e6fc697f699, type: 2}
+  m_sharedMaterial: {fileID: -6305659330012232290, guid: b9b814021dc28414e8177e6fc697f699, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4749,8 +4749,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Mudar Teclas
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b9b814021dc28414e8177e6fc697f699, type: 2}
+  m_sharedMaterial: {fileID: -6305659330012232290, guid: b9b814021dc28414e8177e6fc697f699, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4774,8 +4774,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 19.3
+  m_fontSizeBase: 19.3
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8568,6 +8568,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 202345446856750264, guid: 16b816ca265f3494e8ac3d56530a581c, type: 3}
+      propertyPath: thrustForce
+      value: 150
+      objectReference: {fileID: 0}
     - target: {fileID: 407672864493690204, guid: 16b816ca265f3494e8ac3d56530a581c, type: 3}
       propertyPath: station
       value: 

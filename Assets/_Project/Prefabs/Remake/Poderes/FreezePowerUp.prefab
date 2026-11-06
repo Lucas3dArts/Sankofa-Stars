@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e40fc28dd329bd4ebd3a470426fab6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::FreezePowerUp
-  freezeDuration: 5
+  freezeDuration: 10
   tridentePrefab: {fileID: 4956755269411214199, guid: b0e3caf2eadecd340a8fedf8ed4fbdc2, type: 3}
   backgroundMaterial: {fileID: 2100000, guid: ef3cf5c06a1cdf643be55dc7d60fc029, type: 2}
   color1: {r: 0.46226418, g: 0.071956225, b: 0.071956225, a: 0}

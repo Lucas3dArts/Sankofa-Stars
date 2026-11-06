@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35e2d2866f152a846a1e0a85ac414ea8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::LightningPowerUp
-  duration: 8
+  duration: 20
   fireRate: 0.5
   range: 80
   damage: 100

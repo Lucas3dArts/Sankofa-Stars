@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d81090be27ca6d245ab6e1d5e3a9cb5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::ShieldPowerUp
-  shieldDuration: 10
+  shieldDuration: 30
 --- !u!114 &687097304671633281
 MonoBehaviour:
   m_ObjectHideFlags: 0
