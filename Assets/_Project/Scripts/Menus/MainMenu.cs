@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject howToPlayPanel;
     [SerializeField] private GameObject controlsPanel;
+    [SerializeField] private GameObject optionsPanel;
 
     private void Start()
     {
@@ -22,6 +23,7 @@ public class MainMenu : MonoBehaviour
         mainMenuPanel.SetActive(true);
         howToPlayPanel.SetActive(false);
         controlsPanel.SetActive(false);
+        optionsPanel.SetActive(false);
     }
 
     // =========================
@@ -52,6 +54,7 @@ public class MainMenu : MonoBehaviour
         mainMenuPanel.SetActive(false);
         howToPlayPanel.SetActive(true);
         controlsPanel.SetActive(false);
+        optionsPanel.SetActive(false);
     }
 
     public void CloseHowToPlay()
@@ -60,7 +63,7 @@ public class MainMenu : MonoBehaviour
     }
 
     // =========================
-    // MUDAR TECLAS
+    // CONTROLES
     // =========================
 
     public void OpenControls()
@@ -68,12 +71,29 @@ public class MainMenu : MonoBehaviour
         mainMenuPanel.SetActive(false);
         howToPlayPanel.SetActive(false);
         controlsPanel.SetActive(true);
+        optionsPanel.SetActive(false);
     }
 
     public void CloseControls()
     {
         controlsPanel.SetActive(false);
         howToPlayPanel.SetActive(true);
+    }
+
+    // =========================
+    // OPÇÕES
+    // =========================
+
+    public void OpenOptions()
+    {
         mainMenuPanel.SetActive(false);
+        howToPlayPanel.SetActive(false);
+        controlsPanel.SetActive(false);
+        optionsPanel.SetActive(true);
+    }
+
+    public void CloseOptions()
+    {
+        ShowMainMenu();
     }
 }

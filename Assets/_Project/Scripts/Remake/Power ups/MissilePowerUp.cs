@@ -8,6 +8,8 @@ public class MissilePowerUp : MonoBehaviour
 
     [SerializeField] private GameObject missilePrefab;
 
+    
+
     private bool collected = false;
 
     private void OnTriggerEnter(Collider other)

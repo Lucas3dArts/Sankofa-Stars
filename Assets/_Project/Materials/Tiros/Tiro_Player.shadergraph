@@ -1542,7 +1542,7 @@
     "m_ShaderOutputName": "CellDensity",
     "m_StageCapability": 3,
     "m_CustomBinding": "",
-    "m_Value": 5.0,
+    "m_Value": 22.06999969482422,
     "m_DefaultValue": 5.0,
     "m_Labels": [],
     "m_LiteralMode": false
@@ -1605,7 +1605,7 @@
     "m_ShaderOutputName": "AngleOffset",
     "m_StageCapability": 3,
     "m_CustomBinding": "",
-    "m_Value": 2.0,
+    "m_Value": 7.639999866485596,
     "m_DefaultValue": 2.0,
     "m_Labels": [],
     "m_LiteralMode": false

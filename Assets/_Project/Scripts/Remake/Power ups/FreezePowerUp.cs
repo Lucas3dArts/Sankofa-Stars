@@ -39,13 +39,17 @@ public class FreezePowerUp : MonoBehaviour
         if (activated || objectThatTouched == null)
             return;
 
-        GameObject detectedObject = FindPlayerOrShot(objectThatTouched);
+        GameObject detectedObject =
+            FindPlayerOrShot(objectThatTouched);
 
         if (detectedObject == null)
             return;
 
-        bool isPlayer = detectedObject.CompareTag("Player");
-        bool isShot = detectedObject.CompareTag("Tiro");
+        bool isPlayer =
+            detectedObject.CompareTag("Player");
+
+        bool isShot =
+            detectedObject.CompareTag("Tiro");
 
         if (!isPlayer && !isShot)
             return;
@@ -67,19 +71,25 @@ public class FreezePowerUp : MonoBehaviour
         HidePowerUp();
     }
 
-    private GameObject FindPlayerOrShot(GameObject touchedObject)
+    private GameObject FindPlayerOrShot(
+        GameObject touchedObject
+    )
     {
-        Transform currentTransform = touchedObject.transform;
+        Transform currentTransform =
+            touchedObject.transform;
 
         while (currentTransform != null)
         {
-            if (currentTransform.CompareTag("Player") ||
-                currentTransform.CompareTag("Tiro"))
+            if (
+                currentTransform.CompareTag("Player") ||
+                currentTransform.CompareTag("Tiro")
+            )
             {
                 return currentTransform.gameObject;
             }
 
-            currentTransform = currentTransform.parent;
+            currentTransform =
+                currentTransform.parent;
         }
 
         Rigidbody attachedRigidbody =
@@ -87,10 +97,13 @@ public class FreezePowerUp : MonoBehaviour
 
         if (attachedRigidbody != null)
         {
-            GameObject rigidbodyObject = attachedRigidbody.gameObject;
+            GameObject rigidbodyObject =
+                attachedRigidbody.gameObject;
 
-            if (rigidbodyObject.CompareTag("Player") ||
-                rigidbodyObject.CompareTag("Tiro"))
+            if (
+                rigidbodyObject.CompareTag("Player") ||
+                rigidbodyObject.CompareTag("Tiro")
+            )
             {
                 return rigidbodyObject;
             }
@@ -101,14 +114,18 @@ public class FreezePowerUp : MonoBehaviour
 
     private void HidePowerUp()
     {
-        Collider[] colliders = GetComponentsInChildren<Collider>(true);
+        // Desativa somente os Colliders do coletável.
+        Collider[] colliders =
+            GetComponentsInChildren<Collider>(true);
 
         foreach (Collider currentCollider in colliders)
         {
             currentCollider.enabled = false;
         }
 
-        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        // Esconde somente os Renderers do coletável.
+        Renderer[] renderers =
+            GetComponentsInChildren<Renderer>(true);
 
         foreach (Renderer currentRenderer in renderers)
         {
@@ -129,13 +146,7 @@ public class FreezePowerUp : MonoBehaviour
             " segundos!"
         );
 
-        if (PowerUpDurationUI.Instance != null)
-        {
-            PowerUpDurationUI.Instance.StartPowerUp(
-                "Fecha Caminho de Exu",
-                freezeDuration
-            );
-        }
+        ActivateFreezeLiquid();
 
         if (BackgroundPowerEffectManager.Instance != null)
         {
@@ -151,50 +162,150 @@ public class FreezePowerUp : MonoBehaviour
             AudioManager.Instance.PlayPowerUpSound();
         }
 
-        StartCoroutine(FreezeAllEnemies());
+        StartCoroutine(
+            FreezeAllEnemies()
+        );
+    }
+
+    private void ActivateFreezeLiquid()
+    {
+        // Procura somente um objeto ativo na cena.
+        GameObject liquidObject =
+            GameObject.Find("Liquido_Freeze");
+
+        if (liquidObject == null)
+        {
+            Debug.LogError(
+                "FreezePowerUp: não foi encontrado um objeto ativo " +
+                "chamado 'Liquido_Freeze' na cena.",
+                this
+            );
+
+            return;
+        }
+
+        PowerLiquidFill liquidFill =
+            liquidObject.GetComponent<PowerLiquidFill>();
+
+        if (liquidFill == null)
+        {
+            Debug.LogError(
+                "FreezePowerUp: o objeto 'Liquido_Freeze' " +
+                "não possui o componente PowerLiquidFill.",
+                liquidObject
+            );
+
+            return;
+        }
+
+        if (!liquidFill.isActiveAndEnabled)
+        {
+            Debug.LogError(
+                "FreezePowerUp: o PowerLiquidFill do objeto " +
+                "'Liquido_Freeze' está desativado.",
+                liquidObject
+            );
+
+            return;
+        }
+
+        Debug.Log(
+            "Líquido do Freeze encontrado: " +
+            GetFullPath(liquidObject.transform) +
+            " | Cena: " +
+            liquidObject.scene.name +
+            " | activeSelf: " +
+            liquidObject.activeSelf +
+            " | activeInHierarchy: " +
+            liquidObject.activeInHierarchy,
+            liquidObject
+        );
+
+        // Coloca o shader em 1.
+        liquidFill.CollectPower();
+
+        // Faz o shader descer de 1 até 0.
+        liquidFill.ActivatePower(
+            freezeDuration
+        );
+    }
+
+    private string GetFullPath(Transform target)
+    {
+        string path = target.name;
+
+        while (target.parent != null)
+        {
+            target = target.parent;
+
+            path =
+                target.name +
+                "/" +
+                path;
+        }
+
+        return path;
     }
 
     private IEnumerator FreezeAllEnemies()
     {
-        List<FrozenObject> frozenObjects = new List<FrozenObject>();
-        List<GameObject> tridents = new List<GameObject>();
+        List<FrozenObject> frozenObjects =
+            new List<FrozenObject>();
+
+        List<GameObject> tridents =
+            new List<GameObject>();
 
         // ASTEROIDES
         GameObject[] asteroids =
-            GameObject.FindGameObjectsWithTag("Asteroide");
+            GameObject.FindGameObjectsWithTag(
+                "Asteroide"
+            );
 
         foreach (GameObject asteroid in asteroids)
         {
-            FreezeObject(asteroid, frozenObjects, tridents);
+            FreezeObject(
+                asteroid,
+                frozenObjects,
+                tridents
+            );
         }
 
         // INIMIGOS
         GameObject[] enemies =
-            GameObject.FindGameObjectsWithTag("Inimigo");
+            GameObject.FindGameObjectsWithTag(
+                "Inimigo"
+            );
 
         foreach (GameObject enemy in enemies)
         {
-            FreezeObject(enemy, frozenObjects, tridents);
+            FreezeObject(
+                enemy,
+                frozenObjects,
+                tridents
+            );
         }
 
         Debug.Log(
             "Todos os inimigos e asteroides foram congelados."
         );
 
-        yield return new WaitForSeconds(freezeDuration);
+        yield return new WaitForSeconds(
+            freezeDuration
+        );
 
         // DESCONGELA
         foreach (FrozenObject frozenObject in frozenObjects)
         {
-            if (frozenObject.rb != null)
-            {
-                frozenObject.rb.isKinematic = false;
-                frozenObject.rb.linearVelocity =
-                    frozenObject.velocity;
+            if (frozenObject.rb == null)
+                continue;
 
-                frozenObject.rb.angularVelocity =
-                    frozenObject.angularVelocity;
-            }
+            frozenObject.rb.isKinematic = false;
+
+            frozenObject.rb.linearVelocity =
+                frozenObject.velocity;
+
+            frozenObject.rb.angularVelocity =
+                frozenObject.angularVelocity;
         }
 
         // REMOVE OS TRIDENTES
@@ -208,10 +319,14 @@ public class FreezePowerUp : MonoBehaviour
 
         if (BackgroundPowerEffectManager.Instance != null)
         {
-            BackgroundPowerEffectManager.Instance.DeactivateEffect(this);
+            BackgroundPowerEffectManager.Instance.DeactivateEffect(
+                this
+            );
         }
 
-        Debug.Log("Congelamento encerrado.");
+        Debug.Log(
+            "Congelamento encerrado."
+        );
 
         Destroy(gameObject);
     }
@@ -230,7 +345,8 @@ public class FreezePowerUp : MonoBehaviour
 
         if (rb == null)
         {
-            rb = objectToFreeze.GetComponentInChildren<Rigidbody>();
+            rb =
+                objectToFreeze.GetComponentInChildren<Rigidbody>();
         }
 
         if (rb == null)

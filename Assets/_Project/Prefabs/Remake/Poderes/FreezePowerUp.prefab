@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7438905321241502808}
   - component: {fileID: 4994162943849999220}
   - component: {fileID: 3708583262398673819}
-  - component: {fileID: -7490475730912583754}
   m_Layer: 0
   m_Name: FreezePowerUp
   m_TagString: PowerUp
@@ -53,6 +52,7 @@ MonoBehaviour:
   backgroundMaterial: {fileID: 2100000, guid: ef3cf5c06a1cdf643be55dc7d60fc029, type: 2}
   color1: {r: 0.46226418, g: 0.071956225, b: 0.071956225, a: 0}
   color2: {r: 0.11081432, g: 0.08401567, b: 0.3018868, a: 0}
+  liquidFill: {fileID: 9223272441852296778, guid: 48c2430b73c0619419f7e002b64e3d41, type: 3}
 --- !u!135 &4994162943849999220
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -101,19 +101,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-7490475730912583754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373058952910430413}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd751b7b1385d6240ad50487b815a8c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 3dSpaceShooter::RadarPowerUp
-  powerType: 0
 --- !u!1 &2462779182147566861
 GameObject:
   m_ObjectHideFlags: 0

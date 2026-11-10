@@ -4452,7 +4452,7 @@ MonoBehaviour:
   player: {fileID: 767046572685319241, guid: 16b816ca265f3494e8ac3d56530a581c, type: 3}
   moveSpeed: 20
   rotationSpeed: 10
-  attackDistance: 60
+  attackDistance: 100
   stoppingDistance: 10
   projectilePrefab: {fileID: 7806511974304636477, guid: 72b0934b84f5cb7478a8bc0d7117ee61, type: 3}
   firePoint: {fileID: 1577325895054218545}

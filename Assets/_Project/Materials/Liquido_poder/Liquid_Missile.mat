@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Liquid
+  m_Name: Liquid_Missile
   m_Shader: {fileID: -6465566751694194690, guid: 32106029546288c4d940c99593e6ce1d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -38,12 +38,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Fill: 0.469
+    - _Fill: 0
+    - _Fresnel_Power: 16.57
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
     - _Cut_Color: {r: 0, g: 0.8666667, b: 0.054450266, a: 1}
-    - _Liquid_Color: {r: 0.7169812, g: 0, b: 0, a: 1}
+    - _Fresnel_Color: {r: 1.371616, g: 1.1465852, b: 0, a: 1}
+    - _Liquid_Color: {r: 7.6649227, g: 0, b: 5.981386, a: 1}
+    - _Liquid_color: {r: 1.7534889, g: 11.984315, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7200336815947647340

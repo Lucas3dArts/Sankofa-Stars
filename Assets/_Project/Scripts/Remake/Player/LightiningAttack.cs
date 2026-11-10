@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -30,18 +29,34 @@ public class LightningAttack : MonoBehaviour
     private float range;
     private float damage;
 
+    private PowerLiquidFill liquidFill;
+
+    private void Awake()
+    {
+        // Usa os valores padrão até o power-up
+        // fornecer novos valores.
+        duration = defaultDuration;
+        fireRate = defaultFireRate;
+        range = defaultRange;
+        damage = defaultDamage;
+
+        FindLightningLiquid();
+    }
+
     private void Update()
     {
+        // Só permite ativar se o jogador tiver coletado
+        // o poder e ele ainda não estiver ativo.
         if (!powerUpAvailable || powerActive)
             return;
 
-        if (powerUpAction != null &&
-            powerUpAction.action.WasPressedThisFrame())
+        if (
+            powerUpAction != null &&
+            powerUpAction.action.WasPressedThisFrame()
+        )
         {
-            //ativa o poder
             ActivatePower();
 
-            //ativa o effeito do background
             if (BackgroundPowerEffectManager.Instance != null)
             {
                 BackgroundPowerEffectManager.Instance.ActivateEffect(
@@ -51,7 +66,6 @@ public class LightningAttack : MonoBehaviour
                 );
             }
 
-            //ativa o som
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlayPowerUpSound();
@@ -62,13 +76,17 @@ public class LightningAttack : MonoBehaviour
     private void OnEnable()
     {
         if (powerUpAction != null)
+        {
             powerUpAction.action.Enable();
+        }
     }
 
     private void OnDisable()
     {
         if (powerUpAction != null)
+        {
             powerUpAction.action.Disable();
+        }
     }
 
     public void StorePowerUp(
@@ -85,8 +103,17 @@ public class LightningAttack : MonoBehaviour
 
         powerUpAvailable = true;
 
+        // Enche o líquido quando o poder é coletado.
+        PowerLiquidFill currentLiquid =
+            GetLightningLiquid();
+
+        if (currentLiquid != null)
+        {
+            currentLiquid.CollectPower();
+        }
+
         Debug.Log(
-            "⚡ TEMPESTADE DE IANSÃ DISPONÍVEL!"
+            "TEMPESTADE DE IANSÃ DISPONÍVEL!"
         );
 
         Debug.Log(
@@ -99,7 +126,21 @@ public class LightningAttack : MonoBehaviour
         powerUpAvailable = false;
         powerActive = true;
 
-        Debug.Log("⚡ TEMPESTADE DE IANSÃ ATIVADA!");
+        Debug.Log(
+            "TEMPESTADE DE IANSÃ ATIVADA!"
+        );
+
+        // Começa a esvaziar durante a duração
+        // real do poder.
+        PowerLiquidFill currentLiquid =
+            GetLightningLiquid();
+
+        if (currentLiquid != null)
+        {
+            currentLiquid.ActivatePower(
+                duration
+            );
+        }
 
         ShipController ship =
             GetComponent<ShipController>();
@@ -109,16 +150,106 @@ public class LightningAttack : MonoBehaviour
             ship.ActivateStorm(duration);
         }
 
-        if (PowerUpDurationUI.Instance != null)
+        StartCoroutine(
+            LightningRoutine()
+        );
+    }
+
+    private void FindLightningLiquid()
+    {
+        GameObject liquidObject =
+            GameObject.Find("Liquido_Lightning");
+
+        if (liquidObject == null)
         {
-            PowerUpDurationUI.Instance.StartPowerUp(
-                "Tempestade de Iansã",
-                duration
+            liquidFill = null;
+
+            Debug.LogWarning(
+                "LightningAttack: não foi encontrado um objeto ativo " +
+                "chamado 'Liquido_Lightning' na cena.",
+                this
             );
+
+            return;
         }
 
-        StartCoroutine(LightningRoutine());
+        liquidFill =
+            liquidObject.GetComponent<PowerLiquidFill>();
+
+        if (liquidFill == null)
+        {
+            Debug.LogError(
+                "LightningAttack: o objeto 'Liquido_Lightning' " +
+                "não possui o componente PowerLiquidFill.",
+                liquidObject
+            );
+
+            return;
+        }
+
+        Debug.Log(
+            "Líquido da tempestade encontrado: " +
+            GetFullPath(liquidObject.transform) +
+            " | activeInHierarchy: " +
+            liquidObject.activeInHierarchy,
+            liquidObject
+        );
     }
+
+    private PowerLiquidFill GetLightningLiquid()
+    {
+        // Caso a referência não tenha sido localizada no Awake,
+        // procura novamente quando o poder for coletado ou ativado.
+        if (
+            liquidFill == null ||
+            !liquidFill.gameObject.activeInHierarchy
+        )
+        {
+            FindLightningLiquid();
+        }
+
+        if (liquidFill == null)
+        {
+            Debug.LogError(
+                "LightningAttack: não foi possível localizar " +
+                "o PowerLiquidFill da tempestade.",
+                this
+            );
+
+            return null;
+        }
+
+        if (!liquidFill.isActiveAndEnabled)
+        {
+            Debug.LogError(
+                "LightningAttack: o componente PowerLiquidFill do objeto " +
+                "'Liquido_Lightning' está inativo.",
+                liquidFill.gameObject
+            );
+
+            return null;
+        }
+
+        return liquidFill;
+    }
+
+    private string GetFullPath(Transform target)
+    {
+        string path = target.name;
+
+        while (target.parent != null)
+        {
+            target = target.parent;
+
+            path =
+                target.name +
+                "/" +
+                path;
+        }
+
+        return path;
+    }
+
     private IEnumerator LightningRoutine()
     {
         float timer = 0f;
@@ -136,13 +267,24 @@ public class LightningAttack : MonoBehaviour
 
         powerActive = false;
 
+        // Garante que o líquido termine completamente vazio.
+        PowerLiquidFill currentLiquid =
+            GetLightningLiquid();
+
+        if (currentLiquid != null)
+        {
+            currentLiquid.SetFill(0f);
+        }
+
         if (BackgroundPowerEffectManager.Instance != null)
         {
-            BackgroundPowerEffectManager.Instance.DeactivateEffect(this);
+            BackgroundPowerEffectManager.Instance.DeactivateEffect(
+                this
+            );
         }
 
         Debug.Log(
-            "⚡ TEMPESTADE DE IANSÃ TERMINOU!"
+            "TEMPESTADE DE IANSÃ TERMINOU!"
         );
     }
 
@@ -154,34 +296,30 @@ public class LightningAttack : MonoBehaviour
         if (target == null)
         {
             Debug.Log(
-                "⚡ Nenhum alvo próximo para o raio."
+                "Nenhum alvo próximo para o raio."
             );
 
             return;
         }
 
         Debug.Log(
-            "⚡ RAIO ATINGIU: " +
+            "RAIO ATINGIU: " +
             target.name
         );
 
-        // Cria o efeito visual do raio
-        CreateLightningEffect(target.transform);
+        CreateLightningEffect(
+            target.transform
+        );
 
-        // Causa dano
         DamageTarget(target);
     }
 
     private GameObject FindClosestTarget()
     {
         GameObject closestTarget = null;
-
         float closestDistance = range;
 
-        // =========================
-        // ASTEROIDES
-        // =========================
-
+        // Procura asteroides.
         GameObject[] asteroids =
             GameObject.FindGameObjectsWithTag(
                 "Asteroide"
@@ -192,11 +330,10 @@ public class LightningAttack : MonoBehaviour
             if (asteroid == null)
                 continue;
 
-            float distance =
-                Vector3.Distance(
-                    transform.position,
-                    asteroid.transform.position
-                );
+            float distance = Vector3.Distance(
+                transform.position,
+                asteroid.transform.position
+            );
 
             if (distance < closestDistance)
             {
@@ -205,10 +342,7 @@ public class LightningAttack : MonoBehaviour
             }
         }
 
-        // =========================
-        // NAVES
-        // =========================
-
+        // Procura naves inimigas.
         GameObject[] enemies =
             GameObject.FindGameObjectsWithTag(
                 "Inimigo"
@@ -219,11 +353,10 @@ public class LightningAttack : MonoBehaviour
             if (enemy == null)
                 continue;
 
-            float distance =
-                Vector3.Distance(
-                    transform.position,
-                    enemy.transform.position
-                );
+            float distance = Vector3.Distance(
+                transform.position,
+                enemy.transform.position
+            );
 
             if (distance < closestDistance)
             {
@@ -237,7 +370,7 @@ public class LightningAttack : MonoBehaviour
 
     private void DamageTarget(GameObject target)
     {
-        // ASTEROIDE
+        // Asteroide.
         Asteroide asteroid =
             target.GetComponentInParent<Asteroide>();
 
@@ -247,7 +380,7 @@ public class LightningAttack : MonoBehaviour
             return;
         }
 
-        // NAVE
+        // Nave inimiga.
         EnemyShip enemy =
             target.GetComponentInParent<EnemyShip>();
 
@@ -260,11 +393,9 @@ public class LightningAttack : MonoBehaviour
             return;
         }
 
-        // NAVE DA ESTAÇÃO
+        // Nave inimiga da estação.
         EnemyShipStation stationEnemy =
-            target.GetComponentInParent<
-                EnemyShipStation
-            >();
+            target.GetComponentInParent<EnemyShipStation>();
 
         if (stationEnemy != null)
         {
@@ -277,21 +408,31 @@ public class LightningAttack : MonoBehaviour
     private void CreateLightningEffect(Transform target)
     {
         if (lightningPrefab == null)
+        {
+            Debug.LogWarning(
+                "LightningAttack: Lightning Prefab " +
+                "não foi configurado.",
+                this
+            );
+
             return;
+        }
 
         Vector3 direction =
-            (target.position - transform.position).normalized;
+            (
+                target.position -
+                transform.position
+            ).normalized;
 
-        // Posição inicial do raio um pouco à frente da nave
         Vector3 startPosition =
-            transform.position + direction * 5f;
+            transform.position +
+            direction * 5f;
 
-        GameObject lightning =
-            Instantiate(
-                lightningPrefab,
-                startPosition,
-                Quaternion.identity
-            );
+        GameObject lightning = Instantiate(
+            lightningPrefab,
+            startPosition,
+            Quaternion.identity
+        );
 
         LightningEffect effect =
             lightning.GetComponent<LightningEffect>();

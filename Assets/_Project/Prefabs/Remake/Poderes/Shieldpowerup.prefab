@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2399310881973741906}
   - component: {fileID: 7610713925951645089}
   - component: {fileID: 5404033780798898339}
-  - component: {fileID: 687097304671633281}
   m_Layer: 0
   m_Name: Shieldpowerup
   m_TagString: PowerUp
@@ -70,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 14e1bf0430232ce48a11e775f97573db, type: 2}
+  - {fileID: 2100000, guid: 73363cf2e38086f4c976538cd20170f4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -128,19 +127,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 3dSpaceShooter::ShieldPowerUp
   shieldDuration: 30
---- !u!114 &687097304671633281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2172604434365384283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd751b7b1385d6240ad50487b815a8c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 3dSpaceShooter::RadarPowerUp
-  powerType: 2
 --- !u!1 &8668688399241817697
 GameObject:
   m_ObjectHideFlags: 0

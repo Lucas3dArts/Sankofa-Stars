@@ -72,7 +72,7 @@ Material:
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Color: {r: 18.379171, g: 0, b: 0, a: 1}
+    - _Color: {r: 15.999999, g: 14.376294, b: 0, a: 1}
     - _MainText_Speed: {r: 0, g: 0.5, b: 0, a: 0}
     - _MainText_Tilling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

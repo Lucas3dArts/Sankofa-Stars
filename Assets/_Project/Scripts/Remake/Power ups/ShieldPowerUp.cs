@@ -9,7 +9,7 @@ public class ShieldPowerUp : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Player encostou no poder
+        // Player encostou no poder.
         PlayerHealth player =
             other.GetComponentInParent<PlayerHealth>();
 
@@ -19,7 +19,7 @@ public class ShieldPowerUp : MonoBehaviour
             return;
         }
 
-        // Tiro do Player atingiu o poder
+        // Tiro do Player atingiu o poder.
         Projectile projectile =
             other.GetComponentInParent<Projectile>();
 
@@ -47,21 +47,16 @@ public class ShieldPowerUp : MonoBehaviour
             FindObjectOfType<PlayerHealth>();
 
         if (player != null)
+        {
             player.ActivateShield(shieldDuration);
+        }
 
         StationHealth station =
             FindObjectOfType<StationHealth>();
 
         if (station != null)
-            station.ActivateShield(shieldDuration);
-
-        // Mostra o nome e a duração na HUD
-        if (PowerUpDurationUI.Instance != null)
         {
-            PowerUpDurationUI.Instance.StartPowerUp(
-                "Escudo de Obaluaê",
-                shieldDuration
-            );
+            station.ActivateShield(shieldDuration);
         }
 
         if (AudioManager.Instance != null)
@@ -69,7 +64,68 @@ public class ShieldPowerUp : MonoBehaviour
             AudioManager.Instance.PlayPowerUpSound();
         }
 
+        ActivateShieldLiquid();
+
         Destroy(gameObject);
-        
+    }
+
+    private void ActivateShieldLiquid()
+    {
+        // Procura especificamente o objeto ativo da cena.
+        GameObject liquidObject =
+            GameObject.Find("Liquido_Shield");
+
+        if (liquidObject == null)
+        {
+            Debug.LogError(
+                "ShieldPowerUp: não foi encontrado um objeto ativo " +
+                "chamado 'Liquido_Shield' na cena.",
+                this
+            );
+
+            return;
+        }
+
+        PowerLiquidFill liquidFill =
+            liquidObject.GetComponent<PowerLiquidFill>();
+
+        if (liquidFill == null)
+        {
+            Debug.LogError(
+                "ShieldPowerUp: o objeto 'Liquido_Shield' não possui " +
+                "o componente PowerLiquidFill.",
+                liquidObject
+            );
+
+            return;
+        }
+
+        Debug.Log(
+            "Líquido encontrado na cena: " +
+            GetFullPath(liquidObject.transform) +
+            " | Cena: " +
+            liquidObject.scene.name +
+            " | activeSelf: " +
+            liquidObject.activeSelf +
+            " | activeInHierarchy: " +
+            liquidObject.activeInHierarchy,
+            liquidObject
+        );
+
+        liquidFill.CollectPower();
+        liquidFill.ActivatePower(shieldDuration);
+    }
+
+    private string GetFullPath(Transform target)
+    {
+        string path = target.name;
+
+        while (target.parent != null)
+        {
+            target = target.parent;
+            path = target.name + "/" + path;
+        }
+
+        return path;
     }
 }

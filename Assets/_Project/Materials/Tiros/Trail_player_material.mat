@@ -53,7 +53,7 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _CastShadows: 1
     - _Cull: 0
-    - _Dissilve_effect: 35
+    - _Dissilve_effect: 65.6
     - _DstBlend: 10
     - _DstBlendAlpha: 10
     - _QueueControl: 0
@@ -67,8 +67,8 @@ Material:
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Color1: {r: 0.6784314, g: 0, b: 0.1319728, a: 1}
-    - _Color2: {r: 0, g: 0.1080096, b: 1, a: 1}
+    - _Color1: {r: 16, g: 14.320051, b: 0, a: 1}
+    - _Color2: {r: 0.12615699, g: 0.13405806, b: 0.1981132, a: 1}
     - _Dissolve_speed: {r: 0.5, g: 0, b: 0, a: 0}
     - _MainText_speed: {r: 0.5, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

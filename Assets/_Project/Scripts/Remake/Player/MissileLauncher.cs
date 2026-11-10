@@ -23,6 +23,12 @@ public class MissileLauncher : MonoBehaviour
     private float fireRate;
 
     private GameObject missilePrefab;
+    private PowerLiquidFill liquidFill;
+
+    private void Awake()
+    {
+        FindMissileLiquid();
+    }
 
     public void StorePowerUp(
         float newDuration,
@@ -36,6 +42,15 @@ public class MissileLauncher : MonoBehaviour
 
         hasPowerUp = true;
 
+        // Enche o líquido quando o poder é coletado.
+        PowerLiquidFill currentLiquid =
+            GetMissileLiquid();
+
+        if (currentLiquid != null)
+        {
+            currentLiquid.CollectPower();
+        }
+
         Debug.Log(
             "POWER-UP DE MÍSSEIS COLETADO!"
         );
@@ -47,35 +62,152 @@ public class MissileLauncher : MonoBehaviour
 
     private void Update()
     {
+        // Só permite ativar se o poder estiver disponível
+        // e não estiver sendo usado.
         if (!hasPowerUp || active)
             return;
 
-        if (powerUpAction != null &&
-            powerUpAction.action.WasPressedThisFrame())
+        if (
+            powerUpAction != null &&
+            powerUpAction.action.WasPressedThisFrame()
+        )
         {
             ActivateMissiles();
-            backgroundMaterial.SetColor("_Color_1", color1);
-            backgroundMaterial.SetColor("_Color_2", color2);
-            backgroundMaterial.SetFloat("_Power_Enable", 1);
+
+            if (backgroundMaterial != null)
+            {
+                backgroundMaterial.SetColor(
+                    "_Color_1",
+                    color1
+                );
+
+                backgroundMaterial.SetColor(
+                    "_Color_2",
+                    color2
+                );
+
+                backgroundMaterial.SetFloat(
+                    "_Power_Enable",
+                    1f
+                );
+            }
 
             if (AudioManager.Instance != null)
             {
                 AudioManager.Instance.PlayPowerUpSound();
             }
         }
-
     }
 
     private void OnEnable()
     {
         if (powerUpAction != null)
+        {
             powerUpAction.action.Enable();
+        }
     }
 
     private void OnDisable()
     {
         if (powerUpAction != null)
+        {
             powerUpAction.action.Disable();
+        }
+    }
+
+    private void FindMissileLiquid()
+    {
+        GameObject liquidObject =
+            GameObject.Find("Liquido_Missiles");
+
+        if (liquidObject == null)
+        {
+            liquidFill = null;
+
+            Debug.LogWarning(
+                "MissileLauncher: não foi encontrado um objeto ativo " +
+                "chamado 'Liquido_Missiles' na cena.",
+                this
+            );
+
+            return;
+        }
+
+        liquidFill =
+            liquidObject.GetComponent<PowerLiquidFill>();
+
+        if (liquidFill == null)
+        {
+            Debug.LogError(
+                "MissileLauncher: o objeto 'Liquido_Missiles' " +
+                "não possui o componente PowerLiquidFill.",
+                liquidObject
+            );
+
+            return;
+        }
+
+        Debug.Log(
+            "Líquido dos mísseis encontrado: " +
+            GetFullPath(liquidObject.transform) +
+            " | activeInHierarchy: " +
+            liquidObject.activeInHierarchy,
+            liquidObject
+        );
+    }
+
+    private PowerLiquidFill GetMissileLiquid()
+    {
+        // Se a referência não existe ou ficou inválida,
+        // procura novamente na cena.
+        if (
+            liquidFill == null ||
+            !liquidFill.gameObject.activeInHierarchy
+        )
+        {
+            FindMissileLiquid();
+        }
+
+        if (liquidFill == null)
+        {
+            Debug.LogError(
+                "MissileLauncher: não foi possível localizar " +
+                "o PowerLiquidFill dos mísseis.",
+                this
+            );
+
+            return null;
+        }
+
+        if (!liquidFill.isActiveAndEnabled)
+        {
+            Debug.LogError(
+                "MissileLauncher: o PowerLiquidFill do objeto " +
+                "'Liquido_Missiles' está inativo.",
+                liquidFill.gameObject
+            );
+
+            return null;
+        }
+
+        return liquidFill;
+    }
+
+    private string GetFullPath(Transform target)
+    {
+        string path = target.name;
+
+        while (target.parent != null)
+        {
+            target = target.parent;
+
+            path =
+                target.name +
+                "/" +
+                path;
+        }
+
+        return path;
     }
 
     private void ActivateMissiles()
@@ -87,10 +219,14 @@ public class MissileLauncher : MonoBehaviour
             "=== MODO MÍSSIL ATIVADO ==="
         );
 
-        if (PowerUpDurationUI.Instance != null)
+        // Começa a esvaziar o líquido durante
+        // o mesmo tempo de duração dos mísseis.
+        PowerLiquidFill currentLiquid =
+            GetMissileLiquid();
+
+        if (currentLiquid != null)
         {
-            PowerUpDurationUI.Instance.StartPowerUp(
-                "MÍSSEIS",
+            currentLiquid.ActivatePower(
                 duration
             );
         }
@@ -117,7 +253,23 @@ public class MissileLauncher : MonoBehaviour
 
         active = false;
 
-        backgroundMaterial.SetFloat("_Power_Enable", 0);
+        // Garante que o líquido fique totalmente vazio
+        // quando a rotina terminar.
+        PowerLiquidFill currentLiquid =
+            GetMissileLiquid();
+
+        if (currentLiquid != null)
+        {
+            currentLiquid.SetFill(0f);
+        }
+
+        if (backgroundMaterial != null)
+        {
+            backgroundMaterial.SetFloat(
+                "_Power_Enable",
+                0f
+            );
+        }
 
         Debug.Log(
             "=== MODO MÍSSIL TERMINOU ==="
@@ -163,12 +315,11 @@ public class MissileLauncher : MonoBehaviour
             target.name
         );
 
-        GameObject missile =
-            Instantiate(
-                missilePrefab,
-                firePoint.position,
-                firePoint.rotation
-            );
+        GameObject missile = Instantiate(
+            missilePrefab,
+            firePoint.position,
+            firePoint.rotation
+        );
 
         Missile missileScript =
             missile.GetComponent<Missile>();
@@ -181,7 +332,6 @@ public class MissileLauncher : MonoBehaviour
             );
 
             Destroy(missile);
-
             return;
         }
 
@@ -197,7 +347,7 @@ public class MissileLauncher : MonoBehaviour
         float closestDistance =
             missileSearchRange;
 
-        // Procura asteroides
+        // Procura asteroides.
         GameObject[] asteroids =
             GameObject.FindGameObjectsWithTag(
                 "Asteroide"
@@ -221,7 +371,7 @@ public class MissileLauncher : MonoBehaviour
             }
         }
 
-        // Procura naves inimigas
+        // Procura naves inimigas.
         GameObject[] enemies =
             GameObject.FindGameObjectsWithTag(
                 "Inimigo"

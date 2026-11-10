@@ -6,6 +6,7 @@ public class PauseManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject controlsPanel;
+    [SerializeField] private GameObject optionsPanel;
 
     private bool isPaused = false;
 
@@ -13,6 +14,7 @@ public class PauseManager : MonoBehaviour
     {
         pausePanel.SetActive(false);
         controlsPanel.SetActive(false);
+        optionsPanel.SetActive(false);
 
         LockCursor();
     }
@@ -28,13 +30,17 @@ public class PauseManager : MonoBehaviour
         }
     }
 
+    // =========================
+    // PAUSE
+    // =========================
+
     public void Pause()
     {
         pausePanel.SetActive(true);
         controlsPanel.SetActive(false);
+        optionsPanel.SetActive(false);
 
         Time.timeScale = 0f;
-
         isPaused = true;
 
         UnlockCursor();
@@ -44,22 +50,23 @@ public class PauseManager : MonoBehaviour
     {
         pausePanel.SetActive(false);
         controlsPanel.SetActive(false);
+        optionsPanel.SetActive(false);
 
         Time.timeScale = 1f;
-
         isPaused = false;
 
         LockCursor();
     }
 
     // =========================
-    // MUDAR TECLAS
+    // CONTROLES
     // =========================
 
     public void OpenControls()
     {
         pausePanel.SetActive(false);
         controlsPanel.SetActive(true);
+        optionsPanel.SetActive(false);
 
         UnlockCursor();
     }
@@ -67,6 +74,27 @@ public class PauseManager : MonoBehaviour
     public void CloseControls()
     {
         controlsPanel.SetActive(false);
+        pausePanel.SetActive(true);
+
+        UnlockCursor();
+    }
+
+    // =========================
+    // OPÇÕES
+    // =========================
+
+    public void OpenOptions()
+    {
+        pausePanel.SetActive(false);
+        controlsPanel.SetActive(false);
+        optionsPanel.SetActive(true);
+
+        UnlockCursor();
+    }
+
+    public void CloseOptions()
+    {
+        optionsPanel.SetActive(false);
         pausePanel.SetActive(true);
 
         UnlockCursor();
@@ -97,25 +125,16 @@ public class PauseManager : MonoBehaviour
     }
 
     // =========================
-    // OPÇÕES
-    // =========================
-
-    public void Options()
-    {
-        Debug.Log("Abrir opções futuramente");
-    }
-
-    // =========================
     // CURSOR
     // =========================
 
-    void LockCursor()
+    private void LockCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void UnlockCursor()
+    private void UnlockCursor()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
